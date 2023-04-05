@@ -1,4 +1,10 @@
 import { createApp } from 'vue'
+import Terminal from 'vue-web-terminal'
+
 import App from './App.vue'
 
-createApp(App).mount('#app')
+
+const app = createApp(App)
+app.use(Terminal)
+app.mount('#app')
+// app.config.globalProperties.$mybus = new mitt()
