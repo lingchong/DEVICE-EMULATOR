@@ -1,7 +1,7 @@
 <template>
   <div>
-    <a-button type="primary" @click="showImei">设置</a-button>
-    <a-modal v-model:visible="visible" title="设备列表" @ok="handleOk">
+    <a-button type="primary" @click="showImei">设置IMEI</a-button>
+    <a-modal v-model:visible="visible" title="设置IMEI" @ok="handleOk">
       <a-textarea
         v-model:value="imeisText"
         placeholder="请输入imei列表,回车分隔"

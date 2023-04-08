@@ -147,16 +147,23 @@ export default defineComponent({
       selectGate.value = "";
       setGateUrl("");
     };
-    let sock;
+    let clientSocket;
     const sendGpsMsg = () => {
-      if (!localStorage.getItem(getGateUrl())) {
-        sock = initTcpServer(getGateUrl());
-      }
-      if (sock) {
-        sock.write(JSON.stringify(gpsInfo));
-        mybus.emit("sendLog", JSON.stringify(gpsInfo));
-      } else {
-        mybus.emit("sendLog", getGateUrl() + "connect fail.");
+      try {
+        if (!localStorage.getItem(getGateUrl()) || !clientSocket) {
+          clientSocket = initTcpServer(getGateUrl());
+        }
+        if (clientSocket && localStorage.getItem(getGateUrl())) {
+          clientSocket.write(JSON.stringify(gpsInfo));
+          mybus.emit("sendLog", JSON.stringify(gpsInfo));
+        } else {
+          mybus.emit(
+            "sendLog",
+            "connect fail. please check gateServer " + getGateUrl()
+          );
+        }
+      } catch (error) {
+        mybus.emit("sendLog", "发送消息异常 " + error);
       }
     };
 

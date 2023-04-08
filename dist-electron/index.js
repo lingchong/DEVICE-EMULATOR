@@ -1,0 +1,1 @@
+"use strict";var t=require("electron"),n=require("path");function r(e){return e&&typeof e=="object"&&"default"in e?e:{default:e}}var a=r(n);const o=()=>{new t.BrowserWindow({webPreferences:{contextIsolation:!1,nodeIntegration:!0}}).loadFile(a.default.join(__dirname,"../dist/index.html"))};t.app.whenReady().then(o);

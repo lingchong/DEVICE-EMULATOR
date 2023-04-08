@@ -8,6 +8,8 @@ This template should help get you started developing with Vue 3 in Vite. The tem
 - [VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar)
 
 
+electron 打包： 参考 https://blog.csdn.net/weixin_47551643/article/details/128000357
+
 * 启动
 > npm run dev
 

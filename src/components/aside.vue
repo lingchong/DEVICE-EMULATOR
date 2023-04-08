@@ -2,7 +2,7 @@
   <!-- imei侧边栏 -->
   <div id="aside_container_1">
     <div class="aside_container_1_header">
-      <h2>设备列表</h2>
+      <!-- <h2>设备列表</h2> -->
       <!-- <a-button type="primary">设置</a-button> -->
       <Imei :imeisArray="deviceImeis" @setImeis="updateImeis"></Imei>
     </div>
