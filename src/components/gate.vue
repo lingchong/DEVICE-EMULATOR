@@ -25,7 +25,7 @@
           ></a-input>
           <a-input
             v-model:value="domain.value"
-            placeholder="网关地址"
+            placeholder="网关地址,请使用 IP:PORT 形式指定"
             style="width: 60%; margin-right: 8px"
           />
           <MinusCircleOutlined
@@ -99,11 +99,10 @@ export default defineComponent({
       dynamicValidateForm.domains.forEach((ex) => {
         gateNameArray.push({ value: ex.alias });
       });
-
-      //  更新网关地址
-      emit("setGateName", gateNameArray);
       // 更新网关缓存
       setGateUrlArray(dynamicValidateForm.domains);
+      //  更新网关别名列表
+      emit("setGateName", gateNameArray);
       visible.value = false;
     };
 

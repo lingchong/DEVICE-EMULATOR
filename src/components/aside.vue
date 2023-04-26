@@ -3,7 +3,6 @@
   <div id="aside_container_1">
     <div class="aside_container_1_header">
       <!-- <h2>设备列表</h2> -->
-      <!-- <a-button type="primary">设置</a-button> -->
       <Imei :imeisArray="deviceImeis" @setImeis="updateImeis"></Imei>
     </div>
     <check-circle-outlined />
@@ -53,11 +52,15 @@ export default defineComponent({
         selectedImei.value = "";
       }
     });
-
     const updateImeis = (val) => {
-      deviceImeis.value = val.value.split("\n").filter((item) => item);
+      const array = val.split("\n");
+      deviceImeis.value = array.filter(
+        (item, index) => item.trim().length > 0 && array.indexOf(item) == index
+      );
       setImeiArray(deviceImeis.value);
-      setSelectedImei("");
+      if (!selectedImei.value || array.indexOf(getSelectedImei()) == -1) {
+        setSelectedImei("");
+      }
     };
 
     return {

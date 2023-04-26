@@ -2,6 +2,7 @@
   <div class="header-wrapper">
     <div id="gate_container">
       <div style="display: flex">
+        <span style="margin: auto">设备网关：</span>
         <a-select
           style="width: 180px"
           v-model:value="selectGate"
@@ -13,6 +14,15 @@
         <Gate @setGateName="updateGate"></Gate>
       </div>
       <div class="gps_param_mode">
+        <a-tooltip>
+          <template #title>
+            1. 地球坐标系(WGS84)：常见于 GPS
+            设备,Google地图等国际标准的坐标体系。
+            2.火星坐标系(GCJ-02)：中国国内使用的被强制加密后的坐标体系，高德坐标就属于该种坐标体系。
+            3.百度坐标系(BD-09)：百度地图所使用的坐标体系，是在火星坐标系的基础上又进行了一次加密处理。
+          </template>
+          坐标系：
+        </a-tooltip>
         <a-select v-model:value="coordinateSystem" style="width: 120px">
           <a-select-option value="GCJ-02">火星坐标系</a-select-option>
           <a-select-option value="BD-09">百度坐标系</a-select-option>
@@ -83,9 +93,15 @@
 </template>
 <script lang="ts">
 import mybus from "../lib/bus.js";
+import { message } from "ant-design-vue";
 import { initTcpServer } from "../lib/protocol.js";
 import { defineComponent, reactive, ref } from "vue";
-import { getGateUrlArray, setGateUrl, getGateUrl } from "../lib/cache.js";
+import {
+  getGateUrlArray,
+  setGateUrl,
+  getGateUrl,
+  getSelectedImei,
+} from "../lib/cache.js";
 
 export default defineComponent({
   setup() {
@@ -129,7 +145,7 @@ export default defineComponent({
       if (gateUrl.length > 0) {
         setGateUrl(gateUrl[0].value);
       }
-      //更新imei
+      //更新imei列表
       mybus.emit("setImeis", true);
     };
 
@@ -141,29 +157,51 @@ export default defineComponent({
     //缓存中获取设置的值
     const gateNames = ref(nameArray);
 
-    //更新网关列表
+    //更新网关别名列表
     const updateGate = (array) => {
-      gateNames.value = array;
-      selectGate.value = "";
-      setGateUrl("");
+      gateNames.value= array;
+      if (
+        selectGate.value &&
+        array.some((item) => item.value == selectGate.value)
+      ) {
+
+        let gateUrl = getGateUrlArray().filter(
+          (ex, index) => ex.alias == selectGate.value
+        );
+        if (gateUrl.length > 0) {
+          setGateUrl(gateUrl[0].value);
+        }
+      } else {
+        selectGate.value = "";
+        setGateUrl("");
+      }
     };
     let clientSocket;
     const sendGpsMsg = () => {
+      let selectedImei = getSelectedImei();
+      let gateUrl = getGateUrl();
+      if (!gateUrl) {
+        message.error("请先选择网关地址");
+        return;
+      }
+      //检查imei
+      if (!selectedImei) {
+        message.error("请指定设备IMEI");
+        return;
+      }
       try {
-        if (!localStorage.getItem(getGateUrl()) || !clientSocket) {
+        if (!localStorage.getItem(gateUrl) || !clientSocket) {
           clientSocket = initTcpServer(getGateUrl());
         }
-        if (clientSocket && localStorage.getItem(getGateUrl())) {
+        if (clientSocket && localStorage.getItem(gateUrl)) {
           clientSocket.write(JSON.stringify(gpsInfo));
-          mybus.emit("sendLog", JSON.stringify(gpsInfo));
-        } else {
-          mybus.emit(
-            "sendLog",
-            "connect fail. please check gateServer " + getGateUrl()
-          );
+          mybus.emit("sendLog", selectedImei + "> " + JSON.stringify(gpsInfo));
         }
       } catch (error) {
-        mybus.emit("sendLog", "发送消息异常 " + error);
+        mybus.emit(
+          "sendLog",
+          selectedImei + ">发送消息出现未知异常,异常信息：" + error
+        );
       }
     };
 

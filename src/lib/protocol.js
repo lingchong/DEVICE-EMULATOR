@@ -1,6 +1,18 @@
 
 import mybus from "./bus.js";
-const net = window.require("net");
+import net from 'net';
+// const net = window.require("net");
+
+ 
+export const dataConvert = ( data ) => {
+    var dataBuf = Buffer.from(data, 'utf8');  //字符串构建buffer
+    var dataLen = data.length;
+    console.log(dataBuf);
+    var headBuf = Buffer.alloc(32);     // 协议头32字节
+    headBuf.writeUInt32LE(0x1002, 4);   //协议头命令字
+    headBuf.writeUInt32LE(dataLen, 28); // 协议头中的数据长度
+    var sendBuf = Buffer.concat([headBuf, dataBuf]); 
+} 
 
 
 export const initTcpServer = (tcpServer) => {
@@ -12,7 +24,7 @@ export const initTcpServer = (tcpServer) => {
         localStorage.setItem(tcpServer, "true");
         mybus.emit("sendTcpLog", tcpServer + " connect success");
     } catch (error) {
-        mybus.emit("sendTcpLog", tcpServer + "初始化连接失败,错误信息：" + error);
+        mybus.emit("sendTcpLog", tcpServer + " 初始化连接失败,错误信息：" + error);
         return "";
     }
     // 接收来自服务端的信息

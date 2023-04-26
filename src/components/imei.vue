@@ -24,7 +24,6 @@ export default defineComponent({
     const visible = ref<boolean>(false);
     const imeisText = ref(props.imeisArray.toString().replaceAll(",", "\n"));
 
-    //modal
     const showImei = () => {
       if (getGateUrl()) {
         visible.value = true;
@@ -32,18 +31,16 @@ export default defineComponent({
         message.error("请先选择网关地址");
       }
     };
-
+    
     watch(props, (newVal,OldVal) => {
-      imeisText.value = newVal.imeisArray.toString().replaceAll(",", "\n");
+      imeisText.value = newVal.imeisArray.toString().trim().replaceAll(",", "\n");
     })
-
 
     /**
      * 设置imei
      */
     const handleOk = (e: MouseEvent) => {
-      //修改imei
-      emit("setImeis", imeisText);
+      emit("setImeis", imeisText.value);
       visible.value = false;
     };
     return {
