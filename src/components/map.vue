@@ -1,7 +1,7 @@
 <template>
   <div class="map" id="gd_map_d"></div>
 </template>
- 
+
 <script>
 import { defineComponent, nextTick, onMounted } from "vue";
 import mybus from "../lib/bus.js";

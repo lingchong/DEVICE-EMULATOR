@@ -5,7 +5,6 @@
 <script>
 import { defineComponent, nextTick, onMounted } from "vue";
 import AMapLoader from "@amap/amap-jsapi-loader";
-//   import { message } from 'ant-design-vue';
 import "ant-design-vue/es/message/style/css"; //use ant-design-vue/es instead of ant-design-vue/lib
 export default defineComponent({
   setup() {
