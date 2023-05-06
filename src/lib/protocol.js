@@ -1,20 +1,73 @@
 
 import mybus from "./bus.js";
-import net from 'net';
-// const net = window.require("net");
+// import net from 'net';
+const net = window.require("net");
 
- 
-export const dataConvert = ( data ) => {
-    var dataBuf = Buffer.from(data, 'utf8');  //字符串构建buffer
-    var dataLen = data.length;
-    console.log(dataBuf);
-    var headBuf = Buffer.alloc(32);     // 协议头32字节
-    headBuf.writeUInt32LE(0x1002, 4);   //协议头命令字
-    headBuf.writeUInt32LE(dataLen, 28); // 协议头中的数据长度
-    var sendBuf = Buffer.concat([headBuf, dataBuf]); 
-} 
+/**
+ * 字符文本转换为对应16进制数组 如“78 78” 转换为 [0x78,0x78]
+ * @param {string} text  字符
+ */
+const encodeHex = (text) => {
+    if (text) {
+        let strArray = text.split(" ");
+        const buffer = Buffer.alloc(strArray.length);
+        strArray.forEach((element, index) => {
+            buffer[index] = parseInt(eval("0x" + element).toString(10));
+        });
+        return buffer;
+    }
+}
+
+/**
+ * crc16校验
+ */
+const crc16 = () => {
 
 
+}
+
+
+/**
+ * 发送登录包
+ * @param {*} imei 
+ */
+const encodeLogin = (imei) => {
+    let instruct = "";
+    let imeiCode = "";
+    // 将imei 例如 202304031535301 -> 02 02 30 40 31 53 53 01
+    if (imei.length % 2 == 1) {
+        imeiCode = "0" + imei;
+    }
+    for (var i = 1; i <= imeiCode.length / 2; i++) {
+        instruct = instruct + " " + imeiCode.substring((i - 1) * 2, (i - 1) * 2 + 2)
+    }
+    return instruct;
+}
+
+/**
+ * 发送心跳包
+ * @param {*} imei 
+ */
+const encodeHB = (imei) => {
+
+}
+
+
+/**
+ * 发送GPS定位包
+ * @param {*} imei 
+ */
+const encodeGPS = (imei) => {
+
+}
+
+
+
+/**
+ * 初始化tcp连接
+ * @param {*} tcpServer 
+ * @returns 
+ */
 export const initTcpServer = (tcpServer) => {
     let server = tcpServer.split(":")[0];
     let port = tcpServer.split(":")[1];
