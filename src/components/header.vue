@@ -30,11 +30,11 @@
         </a-select>
       </div>
     </div>
-    <div>
+    <div id="tab_container">
       <a-tabs v-model:activeKey="activeKey">
         <a-tab-pane key="gps" tab="GPS">
           <div id="gps_param_container">
-            <div>
+            <div style="padding-top: 10px;">
               经度:&nbsp;&nbsp;
               <a-input
                 type="number"
@@ -59,7 +59,9 @@
 
               <a-button type="primary" @click="sendGpsMsg()">发送</a-button>
             </div>
+        
           </div>
+          <a-tag  class="adress_style" color="red">{{adress}}</a-tag>
         </a-tab-pane>
         <a-tab-pane key="tracker" tab="轨迹" force-render>
           <div id="track_container">
@@ -123,6 +125,7 @@ export default defineComponent({
     const activeKey = ref<string>("gps");
     //坐标系
     const coordinateSystem = ref("GCJ-02");
+    const adress = ref("");;
 
     //设置定位点
     const setCenter = () => {
@@ -136,6 +139,7 @@ export default defineComponent({
     mybus.on("getPoint", (point) => {
       gpsInfo.lng = point.lng;
       gpsInfo.lat = point.lat;
+      adress.value = point.adress;
     });
 
     //切换网关地址
@@ -159,12 +163,11 @@ export default defineComponent({
 
     //更新网关别名列表
     const updateGate = (array) => {
-      gateNames.value= array;
+      gateNames.value = array;
       if (
         selectGate.value &&
         array.some((item) => item.value == selectGate.value)
       ) {
-
         let gateUrl = getGateUrlArray().filter(
           (ex, index) => ex.alias == selectGate.value
         );
@@ -206,6 +209,7 @@ export default defineComponent({
     };
 
     return {
+      adress,
       sendGpsMsg,
       coordinateSystem,
       firstPoint: "",
@@ -227,6 +231,16 @@ export default defineComponent({
   height: 100%;
   background: rgb(190, 200, 200);
   padding: 22px 5px 5px;
+  #tab_container {
+    .adress_style{
+      margin-top: 10px;
+      padding: 0;;
+      font-size: 20px;
+    }
+    .ant-tabs-bar {
+      margin: 0;
+    }
+  }
 }
 
 #track_container {

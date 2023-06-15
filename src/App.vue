@@ -65,6 +65,7 @@ export default defineComponent({
   height: 100%;
 }
 #setting_container {
+  overflow: auto;
   display: flex;
   flex-direction: row;
   height: 24%;

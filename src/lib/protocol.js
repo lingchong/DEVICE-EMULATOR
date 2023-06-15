@@ -1,7 +1,7 @@
 
 import mybus from "./bus.js";
-// import net from 'net';
-const net = window.require("net");
+import net from 'net';
+// const net = window.require("net");
 
 /**
  * 字符文本转换为对应16进制数组 如“78 78” 转换为 [0x78,0x78]
