@@ -45,14 +45,12 @@ export default defineComponent({
             geocoder = new AMap.Geocoder({
               city: "010", // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
             });
+          });
 
-            // var lnglat = [116.396574, 39.992706];
-
-            // geocoder.getAddress(lnglat, function (status, result) {
-            //   if (status === "complete" && result.info === "OK") {
-            //     // result为对应的地理位置详细信息
-            //   }
-            // });
+          //设置位置标记
+          const marker = new AMap.Marker({
+            position: new AMap.LngLat(116.397428, 39.90923), // 经纬度对象，也可以是经纬度构成的一维数组[116.39, 39.9]
+            map: map, //创建时直接赋予map属性
           });
 
           //获取坐标点
@@ -72,6 +70,7 @@ export default defineComponent({
                     lng: ev.lnglat.lng,
                     adress: result.regeocode.formattedAddress,
                   });
+                  marker.setPosition([ev.lnglat.lng, ev.lnglat.lat]);
                 }
               });
             }

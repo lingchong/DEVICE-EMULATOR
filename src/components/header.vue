@@ -34,7 +34,7 @@
       <a-tabs v-model:activeKey="activeKey">
         <a-tab-pane key="gps" tab="GPS">
           <div id="gps_param_container">
-            <div style="padding-top: 10px;">
+            <div style="padding-top: 10px">
               经度:&nbsp;&nbsp;
               <a-input
                 type="number"
@@ -59,9 +59,8 @@
 
               <a-button type="primary" @click="sendGpsMsg()">发送</a-button>
             </div>
-        
           </div>
-          <a-tag  class="adress_style" color="red">{{adress}}</a-tag>
+          <a-tag class="adress_style" color="red">{{ adress }}</a-tag>
         </a-tab-pane>
         <a-tab-pane key="tracker" tab="轨迹" force-render>
           <div id="track_container">
@@ -89,6 +88,23 @@
             <a-button type="primary">离开围栏</a-button>
           </div>
         </a-tab-pane>
+        <a-tab-pane key="custom" tab="自定义">
+          <div id="custom_container">
+            <a-select
+              v-model:value="instructType"
+              label-in-value
+              style="width: 120px"
+              :options="instructoptions"
+              @change="handleInstrctChange"
+            >
+            </a-select>
+            <a-input
+              v-model:value="customContent"
+              :placeholder="placeholderText"
+              @pressEnter="sendInstruct"
+            />
+          </div>
+        </a-tab-pane>
       </a-tabs>
     </div>
   </div>
@@ -104,6 +120,11 @@ import {
   getGateUrl,
   getSelectedImei,
 } from "../lib/cache.js";
+
+interface Value {
+  value?: string;
+  label?: string;
+}
 
 export default defineComponent({
   setup() {
@@ -121,11 +142,11 @@ export default defineComponent({
       setGateUrl("");
     }
     const selectGate = ref<string>(gateAlias);
-
+    const customContent = ref<string>("");
     const activeKey = ref<string>("gps");
     //坐标系
     const coordinateSystem = ref("GCJ-02");
-    const adress = ref("");;
+    const adress = ref("");
 
     //设置定位点
     const setCenter = () => {
@@ -141,6 +162,29 @@ export default defineComponent({
       gpsInfo.lat = point.lat;
       adress.value = point.adress;
     });
+
+    const placeholderText = ref("请输入在线指令,回车键发送  示例:imei#");
+
+    const instructoptions = ref<SelectTypes["options"]>([
+      {
+        value: "online",
+        label: "在线指令",
+      },
+      {
+        value: "custom",
+        label: "原始报文",
+      },
+    ]);
+    const handleInstrctChange = (value: Value) => {
+      if (value && value.key === "custom") {
+        placeholderText.value = "请输入原始报文,回车键发送  示例:78 78..... ";
+      }
+      console.log(value); // { key: "lucy", label: "Lucy (101)" }
+    };
+
+    const sendInstruct = (e) => {
+      //发送指令
+    }
 
     //切换网关地址
     const handleChange = (value: string) => {
@@ -209,6 +253,9 @@ export default defineComponent({
     };
 
     return {
+      placeholderText,
+      sendInstruct,
+      instructType: ref<Value>({ value: "online" }),
       adress,
       sendGpsMsg,
       coordinateSystem,
@@ -221,6 +268,9 @@ export default defineComponent({
       updateGate,
       activeKey,
       gateNames,
+      customContent,
+      instructoptions,
+      handleInstrctChange,
     };
   },
 });
@@ -232,9 +282,9 @@ export default defineComponent({
   background: rgb(190, 200, 200);
   padding: 22px 5px 5px;
   #tab_container {
-    .adress_style{
+    .adress_style {
       margin-top: 10px;
-      padding: 0;;
+      padding: 0;
       font-size: 20px;
     }
     .ant-tabs-bar {
@@ -272,5 +322,13 @@ export default defineComponent({
   margin: auto 10px;
   display: flex;
   justify-content: space-between;
+}
+#custom_container {
+  width: 80%;
+  margin: auto;
+  display: flex;
+  input {
+    width: 100% !important;
+  }
 }
 </style>
