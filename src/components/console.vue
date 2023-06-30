@@ -22,7 +22,7 @@ export default defineComponent({
   setup() {
     onMounted(() => {
       mybus.on("sendLog", (log) => {
-        printfLog(log);
+        printfLog(log);y
       });
       mybus.on("sendTcpLog", (log) => {
         printfLog(log);
