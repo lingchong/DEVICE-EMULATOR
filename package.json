@@ -1,13 +1,16 @@
 {
   "name": "device-emulator",
   "version": "0.0.0",
-  "type": "commonjs",
-  "main": "dist-electron/index.js",
   "scripts": {
-    "dev": "vite",
     "build": "vite build",
+    "dev": "vite",
+    "electron:build": "vue-cli-service electron:build",
+    "electron:serve": "vue-cli-service electron:serve",
+    "postinstall": "electron-builder install-app-deps",
+    "postuninstall": "electron-builder install-app-deps",
     "preview": "vite preview"
   },
+  "main": "background.js",
   "dependencies": {
     "@amap/amap-jsapi-loader": "^1.0.1",
     "@ant-design/icons-vue": "^6.1.0",
@@ -30,6 +33,8 @@
     "unplugin-vue-components": "^0.19.5",
     "vite": "^2.7.2",
     "vite-plugin-electron": "^0.11.1",
-    "vite-plugin-electron-renderer": "^0.13.14"
-  }
+    "vite-plugin-electron-renderer": "^0.13.14",
+    "vue-cli-plugin-electron-builder": "~2.1.1"
+  },
+  "type": "commonjs"
 }
