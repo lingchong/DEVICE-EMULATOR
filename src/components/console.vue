@@ -12,7 +12,7 @@
   <script>
 import { defineComponent, onMounted } from "vue";
 import Terminal from "vue-web-terminal";
-import { api as TerminalApi } from "vue-web-terminal";
+import { api as TerminalApi,Flash as TerminalFlash } from "vue-web-terminal";
 import mybus from "../lib/bus.js";
 
 export default defineComponent({
@@ -22,11 +22,15 @@ export default defineComponent({
   setup() {
     onMounted(() => {
       mybus.on("sendLog", (log) => {
-        printfLog(log);y
+        printfLog(log);
       });
       mybus.on("sendTcpLog", (log) => {
         printfLog(log);
       });
+      mybus.on("clearLog",() => {
+        // console.log("清空消息")
+        TerminalApi.execute('my-terminal', 'clear')
+      })
     });
     //打印日志
     const printfLog = (log) => {

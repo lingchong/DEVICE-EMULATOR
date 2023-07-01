@@ -21,3 +21,10 @@ electron 打包： 参考 https://blog.csdn.net/weixin_47551643/article/details/
 2. npm run dev
 
 高德应用控制台：https://console.amap.com/dev/key/app
+
+# electron 打包参考
+https://juejin.cn/post/7078543710434099237
+
+
+#轨迹回放
+https://lbs.amap.com/demo/jsapi-v2/example/marker/replaying-historical-running-data

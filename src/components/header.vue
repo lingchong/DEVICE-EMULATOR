@@ -64,7 +64,11 @@
         </a-tab-pane>
         <a-tab-pane key="tracker" tab="轨迹" force-render>
           <div id="track_container">
-            <a-button type="primary">自动</a-button>
+            <p>{{ drawPosition }}</p>
+            <a-button @click="notifyDraw" type="primary">{{
+              drawButtonText
+            }}</a-button>
+            <!-- <a-button type="primary">自动</a-button>
             <a-button type="primary">手动</a-button>
             <div>
               起点&nbsp;:&nbsp;&nbsp;
@@ -75,7 +79,7 @@
                   placeholder="经度,纬度"
                 />
               </a-tooltip>
-            </div>
+            </div> -->
           </div>
         </a-tab-pane>
         <a-tab-pane key="alarm" tab="告警">
@@ -147,6 +151,7 @@ export default defineComponent({
     //坐标系
     const coordinateSystem = ref("GCJ-02");
     const adress = ref("");
+    const drawPosition = ref("");
 
     //设置定位点
     const setCenter = () => {
@@ -161,6 +166,10 @@ export default defineComponent({
       gpsInfo.lng = point.lng;
       gpsInfo.lat = point.lat;
       adress.value = point.adress;
+      if (point.isDraw) {
+        sendGpsMsg();
+        drawPosition.value = point.adress;
+      }
     });
 
     const placeholderText = ref("请输入在线指令,回车键发送  示例:imei#");
@@ -175,16 +184,27 @@ export default defineComponent({
         label: "原始报文",
       },
     ]);
+
+    const drawButtonText = ref<string>("开始模拟");
     const handleInstrctChange = (value: Value) => {
       if (value && value.key === "custom") {
         placeholderText.value = "请输入原始报文,回车键发送  示例:78 78..... ";
       }
-      console.log(value); // { key: "lucy", label: "Lucy (101)" }
+    };
+
+    const notifyDraw = () => {
+      if (drawButtonText.value == "开始模拟") {
+        mybus.emit("sendGpsAuto", "1");
+        drawButtonText.value = "结束模拟";
+      } else {
+        mybus.emit("sendGpsAuto", "");
+        drawButtonText.value = "开始模拟";
+      }
     };
 
     const sendInstruct = (e) => {
       //发送指令
-    }
+    };
 
     //切换网关地址
     const handleChange = (value: string) => {
@@ -223,11 +243,16 @@ export default defineComponent({
         setGateUrl("");
       }
     };
+
     let clientSocket;
     const sendGpsMsg = () => {
       let selectedImei = getSelectedImei();
       let gateUrl = getGateUrl();
       if (!gateUrl) {
+        mybus.emit(
+          "sendLog",
+          selectedImei + ">发送消息出现未知异常,异常信息：" 
+        );
         message.error("请先选择网关地址");
         return;
       }
@@ -238,6 +263,7 @@ export default defineComponent({
       }
       try {
         if (!localStorage.getItem(gateUrl) || !clientSocket) {
+          mybus.emit("clearLog","1");
           clientSocket = initTcpServer(getGateUrl());
         }
         if (clientSocket && localStorage.getItem(gateUrl)) {
@@ -271,6 +297,9 @@ export default defineComponent({
       customContent,
       instructoptions,
       handleInstrctChange,
+      notifyDraw,
+      drawButtonText,
+      drawPosition
     };
   },
 });

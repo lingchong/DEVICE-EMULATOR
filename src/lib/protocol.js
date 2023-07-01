@@ -82,7 +82,13 @@ export const initTcpServer = (tcpServer) => {
     }
     // 接收来自服务端的信息
     clientSocket.on('data', function (data) {
-        mybus.emit("sendTcpLog", tcpServer + "<", data.toString('utf-8'));
+        //打印16进制响应数据
+        if (data && typeof data === "object" && Buffer.isBuffer(data)) {
+            const printText = buf.toString('hex');
+            mybus.emit("sendTcpLog", tcpServer + "<" + printText.replace(/(.{2})/g, '$1 '));
+        } else {
+            mybus.emit("sendTcpLog", tcpServer + "<" + data.toString('utf-8'));
+        }
         console.log('接收到来自服务端的信息：', data.toString('utf-8'));
     });
 
