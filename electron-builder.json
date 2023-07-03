@@ -1,8 +1,8 @@
 {
-    "appId": "com.electron.desktop",
-    "productName": "electron",
+    "appId": "com.czr.desktop",
+    "productName": "CZR Simulator",
     "asar": true,
-    "copyright": "Copyright © 2022 electron",
+    "copyright": "Copyright © 2023 @Author yang.peng",
     "directories": {
       "output": "release"
     },

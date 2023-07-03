@@ -28,3 +28,24 @@ https://juejin.cn/post/7078543710434099237
 
 #轨迹回放
 https://lbs.amap.com/demo/jsapi-v2/example/marker/replaying-historical-running-data
+
+
+
+```
+"build": {
+    "appId": "com.xxx.app",
+    "mac": {
+      "target": ["dmg","zip"]
+    },
+    "win": {
+      "target": ["nsis","zip"]
+    }
+},
+"scripts": {
+    "dist": "electron-builder --win --x64"
+},
+
+```
+```
+ "build":"vite build"
+ ```
